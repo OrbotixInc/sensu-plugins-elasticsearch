@@ -30,7 +30,7 @@
 
 require 'sensu-plugin/metric/cli'
 require 'rest-client'
-require 'json'
+require 'oj'
 require 'base64'
 
 #
@@ -90,7 +90,7 @@ class ESMetrics < Sensu::Plugin::Metric::CLI::Graphite
                end
 
     r = RestClient::Resource.new("#{protocol}://#{config[:host]}:#{config[:port]}#{resource}", timeout: config[:timeout], headers: headers)
-    JSON.parse(r.get)
+    Oj.load(r.get)
   rescue Errno::ECONNREFUSED
     warning 'Connection refused'
   rescue RestClient::RequestTimeout
